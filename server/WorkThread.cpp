@@ -19,12 +19,48 @@ void *pthread_work(void *ptr)
     //读取客户端发送的认证包
     socketIO.readn((void *)buf, 4); //先读取包头
     cout << "----------------" << endl;
+
     socketIO.readn((void *)&length, sizeof(int)); //再读取包的大小值
     cout << "length: " << length << endl;
-    char * left_buf = new char[length - 4 - 4];
-    nread = socketIO.readn((void *)left_buf, sizeof(length - 4 - 4));   //读取认证报文中的剩余部分
-    packet.authorize(left_buf, nread);
 
+    char * left_buf = new char[length - 4 - 4];
+    nread = socketIO.readn((void *)left_buf, (length - 4 - 4));   //读取认证报文中的剩余部分
+    string authorize_pac = packet.authorize(left_buf, nread);
+    cout << "authorize_pac.size: " << authorize_pac.size() << endl;
+    socketIO.writen((void *)authorize_pac.c_str(), authorize_pac.size()); //向客户端发送认证包
+
+    // for ( ; ; )
+    //向客户端发送请求包
+    string query_pac = packet.query();
+    socketIO.writen((void *)query_pac.c_str(), query_pac.size());
+
+    //读取客户端发送的响应报文
+    socketIO.readn((void *)buf, 4);
+    socketIO.readn((void *)&length, sizeof(int));
+    memset(left_buf, 0, sizeof(left_buf));
+    nread = socketIO.readn((void *)left_buf, (length - 4 -4));
+    //处理客户端的响应报文
+    packet.handle_response(left_buf, nread);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /********************************************************/
     while (1) ;
     // int cmd;
     // while ((nread = socketIO.readn((void *)&cmd, sizeof(cmd))) > 0) {

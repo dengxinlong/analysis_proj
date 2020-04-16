@@ -17,6 +17,7 @@ public:
 	size_t readn(void * buf, size_t count);
 	size_t writen(const void * buf, size_t count);
 	size_t readline(void * buf, size_t max_len);
+	void shutdownWrite(void);
 
 private:
 	size_t recv_peek(void * buf, size_t count);

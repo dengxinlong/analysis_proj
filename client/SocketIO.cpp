@@ -68,7 +68,7 @@ writen(const void * buf, size_t count)
 	while(nleft > 0)
 	{
 		int nwrite = ::write(_sockfd, pbuf, nleft);
-		cout << "nwrite: " << nwrite << endl;
+		// cout << "nwrite: " << nwrite << endl;
 		if(nwrite <= 0)
 		{
 			if(nwrite < 0 && errno == EINTR)
@@ -126,6 +126,15 @@ readline(void * buf, size_t maxlen)
 		total += nread;
 	}
 	*pbuf = 0;
-	return maxlen - 1;
+}
+
+void SocketIO::
+shutdownWrite(void)
+{
+	// cout << "shutdownWrite" << endl;
+	if(::shutdown(_sockfd, SHUT_WR) == -1) {
+		perror("shutdown write error");
+		//exit(EXIT_FAILURE);//若peer端已关闭，会导致server端崩溃
+	}
 }
 
