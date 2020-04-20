@@ -123,9 +123,9 @@ generate_response(void)
     //报文类型
     authorize_packet += (char)0x65;
 
-    //客户端ID
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
+    //客户端ID 0x1727
+    authorize_packet += (char)0x27;
+    authorize_packet += (char)0x17;
     authorize_packet += (char)0x00;
     authorize_packet += (char)0x00;
 
@@ -136,17 +136,17 @@ generate_response(void)
     authorize_packet += (char)0x00;
 
     //具体指令内容
-    authorize_packet += (char)0x02;  //一种消息类型
+    authorize_packet += (char)0x0d;  //一种消息类型
     authorize_packet += (char)0x00;
     authorize_packet += (char)0xff;
     authorize_packet += (char)0xff;
     authorize_packet += (char)0x06;
     authorize_packet += (char)0x30;
-    authorize_packet += (char)0x20;
-    authorize_packet += (char)0x20;
-    authorize_packet += (char)0x20;
-    authorize_packet += (char)0x20;
-    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x2e;
+    authorize_packet += (char)0x30;
+    authorize_packet += (char)0x30;
+    authorize_packet += (char)0x34;
+    authorize_packet += (char)0x35;
 
     authorize_packet += (char)0x0b;   //另一种消息类型  04 -> 0b
     authorize_packet += (char)0x00;
@@ -154,10 +154,10 @@ generate_response(void)
     authorize_packet += (char)0xff;
     authorize_packet += (char)0x06;
     authorize_packet += (char)0x30;
-    authorize_packet += (char)0x20;
-    authorize_packet += (char)0x20;
-    authorize_packet += (char)0x20;
-    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x33;
+    authorize_packet += (char)0x33;
+    authorize_packet += (char)0x2e;
+    authorize_packet += (char)0x35;
     authorize_packet += (char)0x20;
 
     authorize_packet += (char)0x06;   //另一种消息类型

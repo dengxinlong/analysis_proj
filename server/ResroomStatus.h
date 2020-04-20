@@ -33,6 +33,14 @@ public:
         _io = io;
     }
 
+    void setPassengerFlow(string passengerFlow) {
+        _passengerFlow = passengerFlow;
+    }
+
+    string getPassengerFlow(void) {
+        return _passengerFlow;
+    }
+
     string getSubEntityId() {
         return _subEntityId;
     }
@@ -103,6 +111,8 @@ private:
     int _gatewayId;
     string _dateTime;
     long _timestamp;
+
+    string _passengerFlow;
 
     string _subEntityId;
     string _io;

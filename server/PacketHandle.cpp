@@ -198,22 +198,32 @@ handle_response(char * buf, size_t length)  //处理从客户端接收到的响�
         string data;
         switch (datatype) {
             case EXTERNAL_IO_TYPE:
-                restroomstatus.setIo(getTypeValue(buf));
+                data = getTypeValue(buf);
+                restroomstatus.setIo(data);
+                break;
+            case PASSENGER_FLOW_VALOUM:
+                data = getTypeValue(buf);
+                restroomstatus.setPassengerFlow(data);
                 break;
             case TEMPERATURE_ONE_TYPE:
-                restroomstatus.setTemperature(getTypeValue(buf));
+                data = getTypeValue(buf);
+                restroomstatus.setTemperature(data);
                 break;
             case MOISTURE_ONE_TYPE:
-                restroomstatus.setMoisture(getTypeValue(buf));
+                data = getTypeValue(buf);
+                restroomstatus.setMoisture(data);
                 break;
             case HS_CONCENTRATION_ONE_TYPE:
-                restroomstatus.setHsConcentration(getTypeValue(buf));
+                data = getTypeValue(buf);
+                restroomstatus.setHsConcentration(data);
                 break;
             case AMMONIA_CONCENTRATION_ONE_TYPE:
-                restroomstatus.setAmmoniaConcentration(getTypeValue(buf));
+                data = getTypeValue(buf);
+                restroomstatus.setAmmoniaConcentration(data);
                 break;
             case VOC_CONCENTRATION_ONE_TYPE:
-                restroomstatus.setVocConcentration(getTypeValue(buf));
+                data = getTypeValue(buf);
+                restroomstatus.setVocConcentration(data);
                 break;
             default:
                 break;
@@ -251,6 +261,8 @@ getTypeValue(char * buf)
     for (int i = 0; i < dataLength; i++) {
         databuf += (char)buf[i];
     }
+    cout << "databuf: " << databuf \
+         << " databuf.size: " << databuf.size() << endl;
 
     return databuf;
 }
