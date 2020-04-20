@@ -11,6 +11,7 @@
 #include "SocketIO.h"
 
 #include <pthread.h>
+#include <unistd.h>
 
 #include <iostream>
 
@@ -18,7 +19,7 @@ using namespace std;
 
 void * pthread_work(void * ptr);
 
-
+void sig_handler(int signo);
 
 
 

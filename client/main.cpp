@@ -47,19 +47,19 @@ int main(int argc, char ** argv)
     nread = socketIO.readn((void *)left_buf, (length - 4 - 4));   //读取认证报文中的剩余部分
     cout << "nread: " << nread << endl;
     authorize_pac = packet.recv_authorize(left_buf, nread);
-
-    //接收从服务端发送过来的请求包
-    socketIO.readn((void *)buf, 4);
-    socketIO.readn((void *)&length, sizeof(length));
-    // cout << "query length: " << length << endl;
-    delete [] left_buf;
-    left_buf = new char[length - 4 - sizeof(length)]{0};
-    nread = socketIO.readn((void *)left_buf, (length - 4 -sizeof(length)));
-    packet.recv_query(left_buf, nread);
-    //可以根据packet.recv_query()返回的类型判断需要发送什么响应报文
-    string response = packet.generate_response();
-    socketIO.writen((void *)response.c_str(), response.size()); //发送响应报文
-
+    for ( ; ; ) {
+        //接收从服务端发送过来的请求包
+        socketIO.readn((void *)buf, 4);
+        socketIO.readn((void *)&length, sizeof(length));
+        // cout << "query length: " << length << endl;
+        delete [] left_buf;
+        left_buf = new char[length - 4 - sizeof(length)]{0};
+        nread = socketIO.readn((void *)left_buf, (length - 4 -sizeof(length)));
+        packet.recv_query(left_buf, nread);
+        //可以根据packet.recv_query()返回的类型判断需要发送什么响应报文
+        string response = packet.generate_response();
+        socketIO.writen((void *)response.c_str(), response.size()); //发送响应报文
+    }
 
 
 

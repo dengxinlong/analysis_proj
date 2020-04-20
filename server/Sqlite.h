@@ -19,6 +19,8 @@ public:
 
     bool query(const char * sql);
 
+    bool insert(const char * sql);
+
     void close(void) { ::sqlite3_close(_db);  }
 
 private:

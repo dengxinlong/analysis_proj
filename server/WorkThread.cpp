@@ -7,6 +7,9 @@
 #include "WorkThread.h"
 #include "PacketHandle.h"
 
+#include <sys/time.h>
+#include <signal.h>
+
 void *pthread_work(void *ptr)
 {
     //  sockfd = *(SocketIO *)ptr;
@@ -15,7 +18,9 @@ void *pthread_work(void *ptr)
     int nread = 0;
     int length = 0;      //报文长度
     PacketHandle packet; //服务器发送给客户端的报文
+    int ret = 0;
 
+authorize:
     //读取客户端发送的认证包
     socketIO.readn((void *)buf, 4); //先读取包头
     cout << "----------------" << endl;
@@ -25,43 +30,43 @@ void *pthread_work(void *ptr)
 
     char * left_buf = new char[length - 4 - 4];
     nread = socketIO.readn((void *)left_buf, (length - 4 - 4));   //读取认证报文中的剩余部分
-    string authorize_pac = packet.authorize(left_buf, nread);
+
+    string authorize_pac = packet.authorize(left_buf, nread, ret);
     cout << "authorize_pac.size: " << authorize_pac.size() << endl;
     socketIO.writen((void *)authorize_pac.c_str(), authorize_pac.size()); //向客户端发送认证包
+    if (!ret)
+        goto authorize;
 
-    // for ( ; ; )
-    //向客户端发送请求包
-    string query_pac = packet.query();
-    socketIO.writen((void *)query_pac.c_str(), query_pac.size());
+    for ( ; ; ) {
+        //向客户端发送请求包
+        string query_pac = packet.query();
+        socketIO.writen((void *)query_pac.c_str(), query_pac.size());
 
-    //读取客户端发送的响应报文
-    socketIO.readn((void *)buf, 4);
-    socketIO.readn((void *)&length, sizeof(int));
-    memset(left_buf, 0, sizeof(left_buf));
-    nread = socketIO.readn((void *)left_buf, (length - 4 -4));
-    //处理客户端的响应报文
-    packet.handle_response(left_buf, nread);
+        socketIO.readn((void *)buf, 4);  //读取客户端发送的响应报文
+        socketIO.readn((void *)&length, sizeof(int));
+        memset(left_buf, 0, sizeof(left_buf));
+        nread = socketIO.readn((void *)left_buf, (length - 4 -4));
 
-
-
-
-
+        packet.handle_response(left_buf, nread);  //处理客户端的响应报文
+        ::sleep(10);
+    }
 
 
 
+    // struct timeval interval;
+    // struct itimerval timer;
+    // interval.tv_sec = 10;
+    // interval.tv_usec = 0;
 
+    // timer.it_interval = interval;
+    // timer.it_value.tv_sec = 1;
+    // timer.it_value.tv_usec = 0;
+    // setitimer(ITIMER_VIRTUAL, &timer, NULL);
 
-
-
-
-
-
-
-
-
+    // signal(SIGVTALRM, sig_handler);
 
     /********************************************************/
-    while (1) ;
+    // while (1) ;
     // int cmd;
     // while ((nread = socketIO.readn((void *)&cmd, sizeof(cmd))) > 0) {
     //     // cout << "nread: " << nread << endl;
@@ -77,4 +82,9 @@ void *pthread_work(void *ptr)
     //     socketIO.shutdownWrite();
 
     return NULL;
+}
+
+void sig_handler(int signo)
+{
+
 }

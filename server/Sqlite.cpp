@@ -14,3 +14,21 @@ query(const char *sql)
 
     return row != 0 ? true : false;
 }
+
+bool Sqlite::
+insert(const char * sql)
+{
+   char *zErrMsg = 0;
+   int rc;
+
+   /* Execute SQL statement */
+   rc = sqlite3_exec(_db, sql, NULL, 0, &zErrMsg);
+   if( rc != SQLITE_OK ){
+      fprintf(stderr, "SQL error: %s\n", zErrMsg);
+      sqlite3_free(zErrMsg);
+      return false;
+   }else{
+      fprintf(stdout, "Records created successfully\n");
+      return true;
+   }
+}

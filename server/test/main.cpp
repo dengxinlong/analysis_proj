@@ -8,7 +8,13 @@
 #include <sqlite3.h>
 #include <time.h>
 
+#include <sys/time.h>
+#include <signal.h>
+
 using namespace std;
+
+void sig_handler(int signo);
+void *pthread_work(void * ptr);
 
 // class Test
 // {
@@ -100,69 +106,48 @@ int main(int argc, char **argv)
     // sqlite3_close(db);
 
 
-    //分析客户端发送的认证包
+    // //分析客户端发送的认证包
 
-    //分析客户端ID号
-    int id = 65537;
-    char * ptr = (char *)&id;
-    cout << "-----------" << endl;
-    cout << (char)*(ptr + 1) << endl;
+    // string authorize_packet;
 
-    struct tm p;
-    tm ptur;
-    time_t Nowt;
-    time(&Nowt);
-    localtime_r(&Nowt, &p);			//获取本地时区的时间
-	printf("1970到目前经历的秒数通过localtime转换成struct tm结构体时间：\n");
-	printf("%d年%d月%d日%d时%d分%d秒\n",p.tm_year+1900,p.tm_mon+1,p.tm_mday,p.tm_hour,p.tm_min,p.tm_sec);		//1900年为基准，月份是0-11月
-    string str_time;
-    char buf[10];
-    sprintf(buf, "%d%d%d", p.tm_year + 1900, p.tm_mon + 1, p.tm_mday);
-    cout << "buf: " << buf << endl;
-    cout << strlen(str_time.c_str()) << endl;
-    cout << str_time << endl;
-    cout << p.tm_hour << endl;
-    string hour = to_string(p.tm_year + 1900);
-    cout << strlen(hour.c_str()) << endl;
-    // char hour = p.tm_hour;
-    cout << hour << endl;
-    // cout << sizeof()
-    //网关的ID在数据库中，发送认证回传包给客户端
-    string authorize_packet;
+    // //拼接包头
+    // authorize_packet += (char)0xfe;
+    // authorize_packet += (char)0x5c;
+    // authorize_packet += (char)0x4b;
+    // authorize_packet += (char)0x89;
 
-    //拼接包头
-    authorize_packet += (char)0xfe;
-    authorize_packet += (char)0x5c;
-    authorize_packet += (char)0x4b;
-    authorize_packet += (char)0x89;
+    // cout << hex << authorize_packet;
+    pthread_t pid;
+    ::pthread_create(&pid, NULL, pthread_work, NULL);
+    cout << "I'm main" << endl;
+    ::pthread_create(&pid, NULL, pthread_work, NULL);
+    ::pthread_create(&pid, NULL, pthread_work, NULL);
 
-    //报文长度，按照网络字节序进行拼接
-    authorize_packet += (char)0x2a;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
+    ::pthread_exit(NULL);
 
-    //消息类型
-    authorize_packet += (char)0x62;
-
-    //客户端ID
-    authorize_packet += (char)0x01;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-
-    //具体指令长度，网络字节序
-    authorize_packet += (char)0x01;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-
-    //具体指令内容
-    authorize_packet += (char)0x00;
-
-    //包尾
-    authorize_packet += (char)0xff;
-    authorize_packet += (char)0xff;
 
     return 0;
+}
+
+void *pthread_work(void * ptr)
+{
+    // struct timeval interval;
+    // struct itimerval timer;
+    // interval.tv_sec = 10;
+    // interval.tv_usec = 0;
+
+    // timer.it_interval = interval;
+    // timer.it_value.tv_sec = 1;
+    // timer.it_value.tv_usec = 0;
+    // setitimer(ITIMER_REAL, &timer, NULL);
+
+    // signal(SIGALRM, sig_handler);
+    // while (1);
+    cout << "I'm a child thread.\n";
+
+}
+
+void sig_handler(int signo)
+{
+    cout << "hello, world" << endl;
 }

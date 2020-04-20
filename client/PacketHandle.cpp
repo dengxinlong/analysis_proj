@@ -115,7 +115,7 @@ generate_response(void)
     authorize_packet += (char)0x89;
 
     //报文长度，网络字节序
-    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x32;
     authorize_packet += (char)0x00;
     authorize_packet += (char)0x00;
     authorize_packet += (char)0x00;
@@ -130,27 +130,44 @@ generate_response(void)
     authorize_packet += (char)0x00;
 
     //具体指令长度，网络字节序
-    authorize_packet += (char)0x0d;
+    authorize_packet += (char)0x1f;
     authorize_packet += (char)0x00;
     authorize_packet += (char)0x00;
     authorize_packet += (char)0x00;
 
     //具体指令内容
+    authorize_packet += (char)0x02;  //一种消息类型
+    authorize_packet += (char)0x00;
+    authorize_packet += (char)0xff;
+    authorize_packet += (char)0xff;
     authorize_packet += (char)0x06;
+    authorize_packet += (char)0x30;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+
+    authorize_packet += (char)0x0b;   //另一种消息类型  04 -> 0b
+    authorize_packet += (char)0x00;
     authorize_packet += (char)0xff;
     authorize_packet += (char)0xff;
+    authorize_packet += (char)0x06;
+    authorize_packet += (char)0x30;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+    authorize_packet += (char)0x20;
+
+    authorize_packet += (char)0x06;   //另一种消息类型
+    authorize_packet += (char)0x00;
     authorize_packet += (char)0xff;
-
-    authorize_packet += (char)0x08;
+    authorize_packet += (char)0xff;
+    authorize_packet += (char)0x04;
     authorize_packet += (char)0x00;
     authorize_packet += (char)0x00;
     authorize_packet += (char)0x00;
-
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-    authorize_packet += (char)0x00;
-
     authorize_packet += (char)0x00;
     // printf("%d", authorize_packet.c_str()[18]);
     // cout << hex << (int)(authorize_packet.c_str()[17]) << endl;
